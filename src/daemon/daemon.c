@@ -289,7 +289,11 @@ static void create_screens(NotifyDaemon* daemon)
 	g_assert(daemon->priv->screens == NULL);
 
 	display = gdk_display_get_default();
+#if GTK_CHECK_VERSION (3, 10, 0)
+	daemon->priv->n_screens = 1;
+#else
 	daemon->priv->n_screens = gdk_display_get_n_screens(display);
+#endif
 
 	daemon->priv->screens = g_new0(NotifyScreen *, daemon->priv->n_screens);
 
@@ -1006,7 +1010,11 @@ static GdkPixbuf* _notify_daemon_pixbuf_from_path(const char* path)
 
 			pixbuf = gtk_icon_theme_load_icon (theme, path, icon_size, GTK_ICON_LOOKUP_USE_BUILTIN, NULL);
 
+#if GTK_CHECK_VERSION (3, 0, 0)
+			g_object_unref (icon_info);
+#else
 			gtk_icon_info_free (icon_info);
+#endif
 		}
 
 		if (pixbuf == NULL)
@@ -1514,7 +1522,13 @@ gboolean notify_daemon_notify_handler(NotifyDaemon* daemon, const char* app_name
 		 * number the user has set in gsettings. */
 		if (g_settings_get_boolean(daemon->gsettings, GSETTINGS_KEY_USE_ACTIVE))
 		{
+#if GTK_CHECK_VERSION (3, 0, 0)
+			GdkDeviceManager *device_manager = gdk_display_get_device_manager (gdk_display_get_default());
+			GdkDevice *device = gdk_device_manager_get_client_pointer (device_manager);
+			gdk_device_get_position (device, &screen, &x, &y);
+#else
 			gdk_display_get_pointer (gdk_display_get_default (), &screen, &x, &y, NULL);
+#endif
 			screen_num = gdk_screen_get_number (screen);
 			monitor_num = gdk_screen_get_monitor_at_point (screen, x, y);
 		}

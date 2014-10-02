@@ -106,7 +106,7 @@ enum
 static gboolean
 activate_link (GtkLabel *label, const char *url, WindowData *windata)
 {
-	windata->url_clicked (windata->win, url);
+	windata->url_clicked (GTK_WINDOW(windata->win), url);
 	return TRUE;
 }
 
@@ -135,13 +135,10 @@ get_notification_arrow_type(GtkWidget *nw)
 static void
 set_arrow_parameters (WindowData *windata)
 {
-	int screen_height;
 	int screen_width;
 	int x,y;
 	GtkArrowType arrow_type;
 
-	screen_height = gdk_screen_get_height(
-		gdk_window_get_screen(gtk_widget_get_window(windata->win)));
 	screen_width = gdk_screen_get_width(
 		gdk_window_get_screen(gtk_widget_get_window(windata->win)));
 
@@ -507,9 +504,7 @@ paint_window(GtkWidget *widget,
 	cairo_surface_t *surface;
 	GtkAllocation alloc;
 	gtk_widget_get_allocation(windata->win, &alloc);
-#if GTK_CHECK_VERSION(3, 0, 0)
-	cairo_t *cr2;
-#else
+#if !GTK_CHECK_VERSION(3, 0, 0)
 	cairo_t *cr;
 #endif
 
@@ -530,7 +525,7 @@ paint_window(GtkWidget *widget,
 													windata->height);
 
 /*
-			cr2 = cairo_create (surface);
+			cairo_t *cr2 = cairo_create (surface);
 			/ * transparent background * /
 			cairo_rectangle (cr2, 0, 0, windata->width, windata->height);
 			cairo_set_source_rgba (cr2, 0.0, 0.0, 0.0, 0.0);
@@ -774,7 +769,11 @@ create_notification(UrlClickedCb url_clicked)
 	gtk_widget_show(drawbox);
 	gtk_container_add(GTK_CONTAINER(win), drawbox);
 
+#if GTK_CHECK_VERSION (3, 0, 0)
+	main_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+#else
 	main_vbox = gtk_vbox_new(FALSE, 0);
+#endif
 	gtk_widget_show(main_vbox);
 	gtk_container_add(GTK_CONTAINER(drawbox), main_vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 1);
@@ -792,7 +791,11 @@ create_notification(UrlClickedCb url_clicked)
 					   FALSE, FALSE, 0);
 	gtk_widget_set_size_request(windata->top_spacer, -1, DEFAULT_ARROW_HEIGHT);
 
+#if GTK_CHECK_VERSION (3, 0, 0)
+	windata->main_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+#else
 	windata->main_hbox = gtk_hbox_new(FALSE, 0);
+#endif
 	gtk_widget_show(windata->main_hbox);
 	gtk_box_pack_start(GTK_BOX(main_vbox), windata->main_hbox,
 					   FALSE, FALSE, 0);
@@ -803,12 +806,20 @@ create_notification(UrlClickedCb url_clicked)
 	gtk_widget_set_size_request(windata->bottom_spacer, -1,
 								DEFAULT_ARROW_HEIGHT);
 
+#if GTK_CHECK_VERSION (3, 0, 0)
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+#else
 	vbox = gtk_vbox_new(FALSE, 6);
+#endif
 	gtk_widget_show(vbox);
 	gtk_box_pack_start(GTK_BOX(windata->main_hbox), vbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
 
+#if GTK_CHECK_VERSION (3, 0, 0)
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+#else
 	hbox = gtk_hbox_new(FALSE, 6);
+#endif
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
@@ -846,10 +857,18 @@ create_notification(UrlClickedCb url_clicked)
 	gtk_widget_show(image);
 	gtk_container_add(GTK_CONTAINER(close_button), image);
 
+#if GTK_CHECK_VERSION (3, 0, 0)
+	windata->content_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+#else
 	windata->content_hbox = gtk_hbox_new(FALSE, 6);
+#endif
 	gtk_box_pack_start(GTK_BOX(vbox), windata->content_hbox, FALSE, FALSE, 0);
 
+#if GTK_CHECK_VERSION (3, 0, 0)
+	windata->iconbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+#else
 	windata->iconbox = gtk_hbox_new(FALSE, 0);
+#endif
 	gtk_widget_show(windata->iconbox);
 	gtk_box_pack_start(GTK_BOX(windata->content_hbox), windata->iconbox,
 					   FALSE, FALSE, 0);
@@ -860,7 +879,11 @@ create_notification(UrlClickedCb url_clicked)
 					   TRUE, TRUE, 0);
 	gtk_misc_set_alignment(GTK_MISC(windata->icon), 0.5, 0.0);
 
+#if GTK_CHECK_VERSION (3, 0, 0)
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+#else
 	vbox = gtk_vbox_new(FALSE, 6);
+#endif
 	gtk_widget_show(vbox);
 	gtk_box_pack_start(GTK_BOX(windata->content_hbox), vbox, TRUE, TRUE, 0);
 
@@ -878,7 +901,11 @@ create_notification(UrlClickedCb url_clicked)
 	gtk_widget_show(alignment);
 	gtk_box_pack_start(GTK_BOX(vbox), alignment, FALSE, TRUE, 0);
 
+#if GTK_CHECK_VERSION (3, 0, 0)
+	windata->actions_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+#else
 	windata->actions_box = gtk_hbox_new(FALSE, 6);
+#endif
 	gtk_container_add(GTK_CONTAINER(alignment), windata->actions_box);
 
 	return GTK_WINDOW(win);
@@ -996,7 +1023,11 @@ add_notification_action(GtkWindow *nw, const char *text, const char *key,
 	gtk_widget_show(button);
 	gtk_box_pack_start(GTK_BOX(windata->actions_box), button, FALSE, FALSE, 0);
 
+#if GTK_CHECK_VERSION (3, 0, 0)
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+#else
 	hbox = gtk_hbox_new(FALSE, 6);
+#endif
 	gtk_widget_show(hbox);
 	gtk_container_add(GTK_CONTAINER(button), hbox);
 
