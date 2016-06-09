@@ -3,65 +3,67 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Joe Hansen <joedalton2@yahoo.dk>, 2012-2013,2015
+# corneliu.e <corneliueva@yahoo.com>, 2014
+# Daniel <danny34ever@yahoo.com>, 2015-2016
+# Polihron Alexandru (APoliTech) <ppolihron@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: MATE Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-12-14 14:02+0300\n"
-"PO-Revision-Date: 2015-09-09 13:22+0000\n"
-"Last-Translator: infirit <inactive+infirit@transifex.com>\n"
-"Language-Team: Danish (http://www.transifex.com/mate/MATE/language/da/)\n"
+"PO-Revision-Date: 2016-05-29 10:05+0000\n"
+"Last-Translator: Polihron Alexandru (APoliTech) <ppolihron@gmail.com>\n"
+"Language-Team: Romanian (http://www.transifex.com/mate/MATE/language/ro/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: da\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: ro\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:1
 msgid "Popup location"
-msgstr "Placering af Pop op"
+msgstr "Locație fereastră informativă"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:2
 msgid ""
 "Default popup location on the workspace for stack notifications. Allowed "
 "values: \"top_left\",\"top_right\",\"bottom_left\" and \"bottom_right\""
-msgstr "Standardplacering af pop op på arbejdsområdet for stakpåmindelser. Tilladte værdier: »top_left«, »top_right«, »bottom_left« og »bottom_right«"
+msgstr "Locul de amplasare pop-up implicit pe spațiul de lucru pentru notificări stiva. Valori permise: \"stânga sus\", \"dreapta sus\", \"stânga jos\" și \"dreapta jos\""
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:3
 #: ../src/capplet/mate-notification-properties.ui.h:7
 msgid "Use Active Monitor"
-msgstr "Brug aktiv skærm"
+msgstr "Folosește monitorul activ"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:4
 msgid "Display the notification on the active monitor."
-msgstr "Vis påmindelsen på den aktive skærm."
+msgstr "Afișează notificarea pe monitorul activ."
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:5
 msgid "Monitor"
-msgstr "Skærm"
+msgstr "Monitor"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:6
 msgid ""
 "Monitor to display the notification. Allowed values: -1 (display on active "
 "monitor) and 0 to n - 1 where n is the number of monitors."
-msgstr "Skærm der skal vise påmindelsen. Tilladte værdier: -1 (visning på aktiv skærm) og 0 til n - 1 hvor n er antallet af skærme."
+msgstr "Monitor pe care să fie afișată notificarea. Valori permise: -1 (afișează pe monitorul activ) și 0 până la n - 1 unde n este numărul de monitoare."
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:7
 msgid "Current theme"
-msgstr "Aktuelt tema"
+msgstr "Temă actuală"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:8
 msgid "The theme used when displaying notifications."
-msgstr "Temaet brugt under visning af påmindelser."
+msgstr "Tema utilizată când sunt afișate notificări."
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:9
 msgid "Sound Enabled"
-msgstr "Lyd slået til"
+msgstr "Sunet activat"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:10
 msgid "Turns on and off sound support for notifications."
-msgstr "Slår lydunderstøttelse af påmindelser til/fra."
+msgstr "Activează sau dezactivează suportul audio pentru notificări."
 
 #: ../src/capplet/mate-notification-properties.c:329
 msgid "Coco"
@@ -73,92 +75,92 @@ msgstr "Nodoka"
 
 #: ../src/capplet/mate-notification-properties.c:337
 msgid "Slider"
-msgstr "Rullebjælke"
+msgstr "Glisor"
 
 #: ../src/capplet/mate-notification-properties.c:341
 msgid "Standard theme"
-msgstr "Standardtema"
+msgstr "Temă standard"
 
 #: ../src/capplet/mate-notification-properties.c:458
 msgid "Error initializing libmatenotify"
-msgstr "Kunne ikke initialisere libmatenotify"
+msgstr "Eroare la inițializarea libmatenotify"
 
 #: ../src/capplet/mate-notification-properties.c:471
 msgid "Notification Test"
-msgstr "Påmindelsestest"
+msgstr "Test notificare"
 
 #: ../src/capplet/mate-notification-properties.c:471
 msgid "Just a test"
-msgstr "Bare en test"
+msgstr "Doar un test"
 
 #: ../src/capplet/mate-notification-properties.c:475
 #, c-format
 msgid "Error while displaying notification: %s"
-msgstr "Kunne ikke vise påmindelse: %s"
+msgstr "Eroare la afișarea notificării: %s"
 
 #: ../src/capplet/mate-notification-properties.c:526
 #, c-format
 msgid "Could not load user interface file: %s"
-msgstr "Kunne ikke indlæse brugergrænsefladefil: %s"
+msgstr "Nu s-a putut încărca fișierul de interfață: %s"
 
 #: ../src/capplet/mate-notification-properties.desktop.in.h:1
 msgid "Popup Notifications"
-msgstr "Pop op-påmindelser"
+msgstr "Notificări informative"
 
 #: ../src/capplet/mate-notification-properties.desktop.in.h:2
 msgid "Set your popup notification preferences"
-msgstr "Angiv dine præferencer for pop op-påmindelser"
+msgstr "Definiți-vă preferințele notificărilor informative"
 
 #: ../src/capplet/mate-notification-properties.ui.h:1
 msgid "Notification Settings"
-msgstr "Påmindelsesindstillinger"
+msgstr "Configurări notificare"
 
 #: ../src/capplet/mate-notification-properties.ui.h:2
 msgid "_Preview"
-msgstr "_Forhåndsvisning"
+msgstr "_Previzualizare"
 
 #: ../src/capplet/mate-notification-properties.ui.h:3
 msgid "<b>General Options</b>"
-msgstr "<b>Generelle indstillinger</b>"
+msgstr "<b>Opțiuni generale</b>"
 
 #: ../src/capplet/mate-notification-properties.ui.h:4
 msgid "P_osition:"
-msgstr "P_osition:"
+msgstr "P_oziție:"
 
 #: ../src/capplet/mate-notification-properties.ui.h:5
 msgid "_Theme:"
-msgstr "_Tema:"
+msgstr "_Temă:"
 
 #: ../src/capplet/mate-notification-properties.ui.h:6
 msgid "_Monitor:"
-msgstr "_Skærm:"
+msgstr "_Monitor:"
 
 #: ../src/capplet/mate-notification-properties.ui.h:8
 msgid "Top Left"
-msgstr "Øverst til venstre"
+msgstr "Stânga sus"
 
 #: ../src/capplet/mate-notification-properties.ui.h:9
 msgid "Top Right"
-msgstr "Øverst til højre"
+msgstr "Dreapta sus"
 
 #: ../src/capplet/mate-notification-properties.ui.h:10
 msgid "Bottom Left"
-msgstr "Nederst til venstre"
+msgstr "Stânga jos"
 
 #: ../src/capplet/mate-notification-properties.ui.h:11
 msgid "Bottom Right"
-msgstr "Nederst til højre"
+msgstr "Dreapta jos"
 
 #: ../src/daemon/daemon.c:1417
 #, c-format
 msgid "Exceeded maximum number of notifications"
-msgstr "Overskred maksimalt antal påmindelser"
+msgstr "Numărul maxim de notificări a fost depașit"
 
 #: ../src/daemon/daemon.c:1724
 #, c-format
 msgid "%u is not a valid notification ID"
-msgstr "%u er ikke et gyldigt påmindelses-id"
+msgstr "%u nu este un ID de notificare valid"
 
 #: ../src/daemon/sound.c:36
 msgid "Notification"
-msgstr "Påmindelse"
+msgstr "Notificare"

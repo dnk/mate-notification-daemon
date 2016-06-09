@@ -52,7 +52,6 @@
 #include "notificationdaemon-dbus-glue.h"
 
 #define MAX_NOTIFICATIONS 20
-
 #define IMAGE_SIZE 48
 #define IDLE_SECONDS 30
 #define NOTIFICATION_BUS_NAME      "org.freedesktop.Notifications"
@@ -87,8 +86,8 @@ typedef struct {
 	guint id;
 	GtkWindow* nw;
 	Window src_window_xid;
-	guint has_timeout: 1;
-	guint paused: 1;
+	gboolean has_timeout;
+	gboolean paused;
 } NotifyTimeout;
 
 typedef struct {
@@ -107,8 +106,7 @@ struct _NotifyDaemonPrivate {
 	gboolean url_clicked_lock;
 
 	NotifyStackLocation stack_location;
-	NotifyScreen** screens;
-	int n_screens;
+	NotifyScreen* screen;
 };
 
 typedef struct {
@@ -116,7 +114,7 @@ typedef struct {
 	NotifyDaemon* daemon;
 } _NotifyPendingClose;
 
-static DBusConnection* dbus_conn = NULL;
+static DBusConnection* dbus_conn;
 
 static void notify_daemon_finalize(GObject* object);
 static void _notification_destroyed_cb(GtkWindow* nw, NotifyDaemon* daemon);
@@ -124,7 +122,7 @@ static void _close_notification(NotifyDaemon* daemon, guint id, gboolean hide_no
 static GdkFilterReturn _notify_x11_filter(GdkXEvent* xevent, GdkEvent* event, NotifyDaemon* daemon);
 static void _emit_closed_signal(GtkWindow* nw, NotifydClosedReason reason);
 static void _action_invoked_cb(GtkWindow* nw, const char* key);
-static NotifyStackLocation get_stack_location_from_string(const char* slocation);
+static NotifyStackLocation get_stack_location_from_string(const gchar *slocation);
 static void sync_notification_position(NotifyDaemon* daemon, GtkWindow* nw, Window source);
 static void monitor_notification_source_windows(NotifyDaemon* daemon, NotifyTimeout* nt, Window source);
 
@@ -153,28 +151,26 @@ static void _notify_timeout_destroy(NotifyTimeout* nt)
 
 static gboolean do_exit(gpointer user_data)
 {
-	//g_debug("Exiting due to inactivity");
-	exit(1);
-
+	exit(0);
 	return FALSE;
 }
 
 static void add_exit_timeout(NotifyDaemon* daemon)
 {
+	g_assert (daemon != NULL);
+
 	if (daemon->priv->exit_timeout_source > 0)
-	{
 		return;
-	}
 
 	daemon->priv->exit_timeout_source = g_timeout_add_seconds(IDLE_SECONDS, do_exit, NULL);
 }
 
 static void remove_exit_timeout(NotifyDaemon* daemon)
 {
+	g_assert (daemon != NULL);
+
 	if (daemon->priv->exit_timeout_source == 0)
-	{
 		return;
-	}
 
 	g_source_remove(daemon->priv->exit_timeout_source);
 	daemon->priv->exit_timeout_source = 0;
@@ -182,8 +178,7 @@ static void remove_exit_timeout(NotifyDaemon* daemon)
 
 static void create_stack_for_monitor(NotifyDaemon* daemon, GdkScreen* screen, int monitor_num)
 {
-	int screen_num = gdk_screen_get_number(screen);
-	NotifyScreen* nscreen = daemon->priv->screens[screen_num];
+	NotifyScreen* nscreen = daemon->priv->screen;
 
 	nscreen->stacks[monitor_num] = notify_stack_new(daemon, screen, monitor_num, daemon->priv->stack_location);
 }
@@ -191,12 +186,10 @@ static void create_stack_for_monitor(NotifyDaemon* daemon, GdkScreen* screen, in
 static void on_screen_monitors_changed(GdkScreen* screen, NotifyDaemon* daemon)
 {
 	NotifyScreen* nscreen;
-	int screen_num;
 	int n_monitors;
 	int i;
 
-	screen_num = gdk_screen_get_number(screen);
-	nscreen = daemon->priv->screens[screen_num];
+	nscreen = daemon->priv->screen;
 
 	n_monitors = gdk_screen_get_n_monitors(screen);
 
@@ -248,11 +241,9 @@ static void on_screen_monitors_changed(GdkScreen* screen, NotifyDaemon* daemon)
 static void create_stacks_for_screen(NotifyDaemon* daemon, GdkScreen *screen)
 {
 	NotifyScreen* nscreen;
-	int screen_num;
 	int i;
 
-	screen_num = gdk_screen_get_number(screen);
-	nscreen = daemon->priv->screens[screen_num];
+	nscreen = daemon->priv->screen;
 
 	nscreen->n_stacks = gdk_screen_get_n_monitors(screen);
 
@@ -281,46 +272,34 @@ static GdkFilterReturn screen_xevent_filter(GdkXEvent* xevent, GdkEvent* event, 
 	return GDK_FILTER_CONTINUE;
 }
 
-static void create_screens(NotifyDaemon* daemon)
+static void create_screen(NotifyDaemon* daemon)
 {
-	GdkDisplay* display;
-	int i;
+    GdkDisplay *display;
+    GdkScreen  *screen;
+    GdkWindow  *gdkwindow;
 
-	g_assert(daemon->priv->screens == NULL);
+	g_assert(daemon->priv->screen == NULL);
 
 	display = gdk_display_get_default();
-#if GTK_CHECK_VERSION (3, 10, 0)
-	daemon->priv->n_screens = 1;
-#else
-	daemon->priv->n_screens = gdk_display_get_n_screens(display);
-#endif
+	screen = gdk_display_get_default_screen (display);
 
-	daemon->priv->screens = g_new0(NotifyScreen *, daemon->priv->n_screens);
+	g_signal_connect(screen, "monitors-changed", G_CALLBACK(on_screen_monitors_changed), daemon);
 
-	for (i = 0; i < daemon->priv->n_screens; i++)
-	{
-		GdkScreen* screen;
-		GdkWindow* gdkwindow;
+	daemon->priv->screen = g_new0(NotifyScreen, 1);
 
-		screen = gdk_display_get_screen(display, i);
-		g_signal_connect(screen, "monitors-changed", G_CALLBACK(on_screen_monitors_changed), daemon);
+	daemon->priv->screen->workarea_atom = XInternAtom(GDK_DISPLAY_XDISPLAY (display), "_NET_WORKAREA", True);
 
-		daemon->priv->screens[i] = g_new0(NotifyScreen, 1);
+	gdkwindow = gdk_screen_get_root_window(screen);
+	gdk_window_add_filter(gdkwindow, (GdkFilterFunc) screen_xevent_filter, daemon->priv->screen);
+	gdk_window_set_events(gdkwindow, gdk_window_get_events(gdkwindow) | GDK_PROPERTY_CHANGE_MASK);
 
-			daemon->priv->screens[i]->workarea_atom = XInternAtom(GDK_DISPLAY_XDISPLAY(gdk_display_get_default()), "_NET_WORKAREA", True);
-
-		gdkwindow = gdk_screen_get_root_window(screen);
-		gdk_window_add_filter(gdkwindow, (GdkFilterFunc) screen_xevent_filter, daemon->priv->screens[i]);
-		gdk_window_set_events(gdkwindow, gdk_window_get_events(gdkwindow) | GDK_PROPERTY_CHANGE_MASK);
-
-		create_stacks_for_screen(daemon, gdk_display_get_screen(display, i));
-	}
+	create_stacks_for_screen(daemon, screen);
 }
 
 static void on_popup_location_changed(GSettings *settings, gchar *key, NotifyDaemon* daemon)
 {
 	NotifyStackLocation stack_location;
-	const char* slocation;
+	gchar *slocation;
 	int i;
 
 	slocation = g_settings_get_string(daemon->gsettings, key);
@@ -337,23 +316,22 @@ static void on_popup_location_changed(GSettings *settings, gchar *key, NotifyDae
 	}
 
 	daemon->priv->stack_location = stack_location;
+	g_free(slocation);
 
-	for (i = 0; i < daemon->priv->n_screens; i++)
+    NotifyScreen *nscreen;
+
+	nscreen = daemon->priv->screen;
+	for (i = 0; i < nscreen->n_stacks; i++)
 	{
-		int j;
-
-		for (j = 0; j < daemon->priv->n_screens; j++)
-		{
-			NotifyStack* stack;
-			stack = daemon->priv->screens[i]->stacks[j];
-			notify_stack_set_location(stack, stack_location);
-		}
+		NotifyStack* stack;
+		stack = nscreen->stacks[i];
+		notify_stack_set_location(stack, stack_location);
 	}
 }
 
 static void notify_daemon_init(NotifyDaemon* daemon)
 {
-	char* location;
+	gchar *location;
 
 	daemon->priv = G_TYPE_INSTANCE_GET_PRIVATE(daemon, NOTIFY_TYPE_DAEMON, NotifyDaemonPrivate);
 
@@ -364,52 +342,46 @@ static void notify_daemon_init(NotifyDaemon* daemon)
 
 	daemon->gsettings = g_settings_new (GSETTINGS_SCHEMA);
 
+	g_signal_connect (daemon->gsettings, "changed::" GSETTINGS_KEY_POPUP_LOCATION, G_CALLBACK (on_popup_location_changed), daemon);
+
 	location = g_settings_get_string (daemon->gsettings, GSETTINGS_KEY_POPUP_LOCATION);
 	daemon->priv->stack_location = get_stack_location_from_string(location);
 	g_free(location);
 
-	g_signal_connect (daemon->gsettings, "changed::" GSETTINGS_KEY_POPUP_LOCATION, G_CALLBACK (on_popup_location_changed), daemon);
+	daemon->priv->screen = NULL;
 
-	daemon->priv->n_screens = 0;
-	daemon->priv->screens = NULL;
-
-	create_screens(daemon);
+	create_screen(daemon);
 
 	daemon->priv->idle_reposition_notify_ids = g_hash_table_new(NULL, NULL);
 	daemon->priv->monitored_window_hash = g_hash_table_new(NULL, NULL);
 	daemon->priv->notification_hash = g_hash_table_new_full(g_int_hash, g_int_equal, g_free, (GDestroyNotify) _notify_timeout_destroy);
 }
 
-static void destroy_screens(NotifyDaemon* daemon)
+static void destroy_screen(NotifyDaemon* daemon)
 {
-	GdkDisplay* display;
-	int i;
-	int j;
+	GdkDisplay *display;
+	GdkScreen  *screen;
+	GdkWindow  *gdkwindow;
+	gint        i;
 
 	display = gdk_display_get_default();
+	screen = gdk_display_get_default_screen (display);
 
-	for (i = 0; i < daemon->priv->n_screens; i++)
-	{
-		GdkScreen* screen;
-		GdkWindow* gdkwindow;
+	g_signal_handlers_disconnect_by_func (screen,
+										  G_CALLBACK (on_screen_monitors_changed),
+										  daemon);
 
-		screen = gdk_display_get_screen(display, i);
-		g_signal_handlers_disconnect_by_func(screen, G_CALLBACK(on_screen_monitors_changed), daemon);
-
-		gdkwindow = gdk_screen_get_root_window(screen);
-		gdk_window_remove_filter(gdkwindow, (GdkFilterFunc) screen_xevent_filter, daemon->priv->screens[i]);
-
-		for (j = 0; i < daemon->priv->screens[i]->n_stacks; j++)
-		{
-			notify_stack_destroy(daemon->priv->screens[i]->stacks[j]);
-			daemon->priv->screens[i]->stacks[j] = NULL;
-		}
-
-		g_free(daemon->priv->screens[i]->stacks);
+	gdkwindow = gdk_screen_get_root_window (screen);
+	gdk_window_remove_filter (gdkwindow, (GdkFilterFunc) screen_xevent_filter, daemon->priv->screen);
+	for (i = 0; i < daemon->priv->screen->n_stacks; i++) {
+		 g_clear_object (&daemon->priv->screen->stacks[i]);
 	}
 
-	g_free(daemon->priv->screens);
-	daemon->priv->screens = NULL;
+	g_free (daemon->priv->screen->stacks);
+	daemon->priv->screen->stacks = NULL;
+
+	g_free(daemon->priv->screen);
+	daemon->priv->screen = NULL;
 }
 
 static void notify_daemon_finalize(GObject* object)
@@ -429,14 +401,14 @@ static void notify_daemon_finalize(GObject* object)
 	g_hash_table_destroy(daemon->priv->idle_reposition_notify_ids);
 	g_hash_table_destroy(daemon->priv->notification_hash);
 
-	destroy_screens(daemon);
+	destroy_screen(daemon);
 
 	g_free(daemon->priv);
 
 	G_OBJECT_CLASS(notify_daemon_parent_class)->finalize(object);
 }
 
-static NotifyStackLocation get_stack_location_from_string(const char* slocation)
+static NotifyStackLocation get_stack_location_from_string(const gchar *slocation)
 {
 	NotifyStackLocation stack_location = NOTIFY_STACK_LOCATION_DEFAULT;
 
@@ -1010,11 +982,7 @@ static GdkPixbuf* _notify_daemon_pixbuf_from_path(const char* path)
 
 			pixbuf = gtk_icon_theme_load_icon (theme, path, icon_size, GTK_ICON_LOOKUP_USE_BUILTIN, NULL);
 
-#if GTK_CHECK_VERSION (3, 0, 0)
 			g_object_unref (icon_info);
-#else
-			gtk_icon_info_free (icon_info);
-#endif
 		}
 
 		if (pixbuf == NULL)
@@ -1031,25 +999,13 @@ static GdkPixbuf* _notify_daemon_scale_pixbuf(GdkPixbuf *pixbuf, gboolean no_str
 {
 	int pw;
 	int ph;
-	float scale_factor_x = 1.0;
-	float scale_factor_y = 1.0;
-	float scale_factor = 1.0;
+	float scale_factor;
 
 	pw = gdk_pixbuf_get_width (pixbuf);
 	ph = gdk_pixbuf_get_height (pixbuf);
 
 	/* Determine which dimension requires the smallest scale. */
-	scale_factor_x = (float) IMAGE_SIZE / (float) pw;
-	scale_factor_y = (float) IMAGE_SIZE / (float) ph;
-
-	if (scale_factor_x > scale_factor_y)
-	{
-		scale_factor = scale_factor_y;
-	}
-	else
-	{
-		scale_factor = scale_factor_x;
-	}
+	scale_factor = (float) IMAGE_SIZE / (float) MAX(pw, ph);
 
 	/* always scale down, allow to disable scaling up */
 	if (scale_factor < 1.0 || !no_stretch_hint)
@@ -1085,8 +1041,9 @@ static void window_clicked_cb(GtkWindow* nw, GdkEventButton* button, NotifyDaemo
 static void url_clicked_cb(GtkWindow* nw, const char *url)
 {
 	NotifyDaemon* daemon;
-	char* escaped_url;
-	char* cmd = NULL;
+	gchar *escaped_url;
+	gchar *cmd = NULL;
+	gchar *found = NULL;
 
 	daemon = NW_GET_DAEMON(nw);
 
@@ -1095,15 +1052,15 @@ static void url_clicked_cb(GtkWindow* nw, const char *url)
 
 	escaped_url = g_shell_quote (url);
 
-	if (g_find_program_in_path ("gvfs-open") != NULL)
+	if ((found = g_find_program_in_path ("gvfs-open")) != NULL)
 	{
 		cmd = g_strdup_printf ("gvfs-open %s", escaped_url);
 	}
-	else if (g_find_program_in_path ("xdg-open") != NULL)
+	else if ((found = g_find_program_in_path ("xdg-open")) != NULL)
 	{
 		cmd = g_strdup_printf ("xdg-open %s", escaped_url);
 	}
-	else if (g_find_program_in_path ("firefox") != NULL)
+	else if ((found = g_find_program_in_path ("firefox")) != NULL)
 	{
 		cmd = g_strdup_printf ("firefox %s", escaped_url);
 	}
@@ -1112,6 +1069,7 @@ static void url_clicked_cb(GtkWindow* nw, const char *url)
 		g_warning ("Unable to find a browser.");
 	}
 
+	g_free (found);
 	g_free (escaped_url);
 
 	if (cmd != NULL)
@@ -1511,7 +1469,9 @@ gboolean notify_daemon_notify_handler(NotifyDaemon* daemon, const char* app_name
 	else
 	{
 		int monitor_num;
-		int screen_num;
+		GdkDisplay *display;
+		GdkDeviceManager *device_manager;
+		GdkDevice *pointer;
 		GdkScreen* screen;
 		gint x, y;
 
@@ -1522,31 +1482,27 @@ gboolean notify_daemon_notify_handler(NotifyDaemon* daemon, const char* app_name
 		 * number the user has set in gsettings. */
 		if (g_settings_get_boolean(daemon->gsettings, GSETTINGS_KEY_USE_ACTIVE))
 		{
-#if GTK_CHECK_VERSION (3, 0, 0)
-			GdkDeviceManager *device_manager = gdk_display_get_device_manager (gdk_display_get_default());
-			GdkDevice *device = gdk_device_manager_get_client_pointer (device_manager);
-			gdk_device_get_position (device, &screen, &x, &y);
-#else
-			gdk_display_get_pointer (gdk_display_get_default (), &screen, &x, &y, NULL);
-#endif
-			screen_num = gdk_screen_get_number (screen);
+			display = gdk_display_get_default ();
+			device_manager = gdk_display_get_device_manager (display);
+			pointer = gdk_device_manager_get_client_pointer (device_manager);
+
+			gdk_device_get_position (pointer, &screen, &x, &y);
 			monitor_num = gdk_screen_get_monitor_at_point (screen, x, y);
 		}
 		else
 		{
 			screen = gdk_display_get_default_screen(gdk_display_get_default());
-			screen_num = gdk_screen_get_number(screen);
 			monitor_num = g_settings_get_int(daemon->gsettings, GSETTINGS_KEY_MONITOR_NUMBER);
 		}
 
-		if (monitor_num >= priv->screens[screen_num]->n_stacks)
+		if (monitor_num >= priv->screen->n_stacks)
 		{
 			/* screw it - dump it on the last one we'll get
 			 a monitors-changed signal soon enough*/
-			monitor_num = priv->screens[screen_num]->n_stacks - 1;
+			monitor_num = priv->screen->n_stacks - 1;
 		}
 
-		notify_stack_add_window (priv->screens[screen_num]->stacks[monitor_num], nw, new_notification);
+		notify_stack_add_window (priv->screen->stacks[monitor_num], nw, new_notification);
 	}
 
 	if (id == 0)
@@ -1661,7 +1617,7 @@ int main(int argc, char** argv)
 	gboolean res;
 	guint request_name_result;
 
-	g_log_set_always_fatal(G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
+	g_log_set_always_fatal(G_LOG_LEVEL_CRITICAL);
 
 	gtk_init(&argc, &argv);
 

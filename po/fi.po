@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Joe Hansen <joedalton2@yahoo.dk>, 2012-2013,2015
+# Mikko Harhanen <gitti@mikkoharhanen.fi>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: MATE Desktop Environment\n"
@@ -11,57 +11,57 @@ msgstr ""
 "POT-Creation-Date: 2015-12-14 14:02+0300\n"
 "PO-Revision-Date: 2015-09-09 13:22+0000\n"
 "Last-Translator: infirit <inactive+infirit@transifex.com>\n"
-"Language-Team: Danish (http://www.transifex.com/mate/MATE/language/da/)\n"
+"Language-Team: Finnish (http://www.transifex.com/mate/MATE/language/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: da\n"
+"Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:1
 msgid "Popup location"
-msgstr "Placering af Pop op"
+msgstr "Ponnahdusviestien sijainti"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:2
 msgid ""
 "Default popup location on the workspace for stack notifications. Allowed "
 "values: \"top_left\",\"top_right\",\"bottom_left\" and \"bottom_right\""
-msgstr "Standardplacering af pop op på arbejdsområdet for stakpåmindelser. Tilladte værdier: »top_left«, »top_right«, »bottom_left« og »bottom_right«"
+msgstr "Oletus ponnahdusviestien sijainnille työpöydällä. Sallittuja arvoja ovat: \"top_left\",\"top_right\",\"bottom_left\" ja \"bottom_right\""
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:3
 #: ../src/capplet/mate-notification-properties.ui.h:7
 msgid "Use Active Monitor"
-msgstr "Brug aktiv skærm"
+msgstr "Käytä aktiivista näyttöä"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:4
 msgid "Display the notification on the active monitor."
-msgstr "Vis påmindelsen på den aktive skærm."
+msgstr "Näytä ilmoitus käytössä olevalla näytöllä"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:5
 msgid "Monitor"
-msgstr "Skærm"
+msgstr "Näyttö"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:6
 msgid ""
 "Monitor to display the notification. Allowed values: -1 (display on active "
 "monitor) and 0 to n - 1 where n is the number of monitors."
-msgstr "Skærm der skal vise påmindelsen. Tilladte værdier: -1 (visning på aktiv skærm) og 0 til n - 1 hvor n er antallet af skærme."
+msgstr "Ilmoitukset esittävä näyttö. Sallitut arvot: -1 (esitä aktiivisella näytöllä) ja 0:sta n - 1:een, jossa n on näyttöjen lukumäärä."
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:7
 msgid "Current theme"
-msgstr "Aktuelt tema"
+msgstr "Nykyinen teema"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:8
 msgid "The theme used when displaying notifications."
-msgstr "Temaet brugt under visning af påmindelser."
+msgstr "Ilmoitusten näytössä käytetty teema."
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:9
 msgid "Sound Enabled"
-msgstr "Lyd slået til"
+msgstr "Äänet käytössä"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:10
 msgid "Turns on and off sound support for notifications."
-msgstr "Slår lydunderstøttelse af påmindelser til/fra."
+msgstr "Kytkee ilmoitusten äänituen päälle ja pois."
 
 #: ../src/capplet/mate-notification-properties.c:329
 msgid "Coco"
@@ -73,92 +73,92 @@ msgstr "Nodoka"
 
 #: ../src/capplet/mate-notification-properties.c:337
 msgid "Slider"
-msgstr "Rullebjælke"
+msgstr "Slider"
 
 #: ../src/capplet/mate-notification-properties.c:341
 msgid "Standard theme"
-msgstr "Standardtema"
+msgstr "Oletusteema"
 
 #: ../src/capplet/mate-notification-properties.c:458
 msgid "Error initializing libmatenotify"
-msgstr "Kunne ikke initialisere libmatenotify"
+msgstr "Libmatenotifyn käynnistys epäonnistui"
 
 #: ../src/capplet/mate-notification-properties.c:471
 msgid "Notification Test"
-msgstr "Påmindelsestest"
+msgstr "Ilmoitustesti"
 
 #: ../src/capplet/mate-notification-properties.c:471
 msgid "Just a test"
-msgstr "Bare en test"
+msgstr "Pelkkä testiajo"
 
 #: ../src/capplet/mate-notification-properties.c:475
 #, c-format
 msgid "Error while displaying notification: %s"
-msgstr "Kunne ikke vise påmindelse: %s"
+msgstr "Virhe näytettäessä ilmoitusta: %s"
 
 #: ../src/capplet/mate-notification-properties.c:526
 #, c-format
 msgid "Could not load user interface file: %s"
-msgstr "Kunne ikke indlæse brugergrænsefladefil: %s"
+msgstr "Käyttöliittymätiedostoa ei voitu ladata: %s"
 
 #: ../src/capplet/mate-notification-properties.desktop.in.h:1
 msgid "Popup Notifications"
-msgstr "Pop op-påmindelser"
+msgstr "Ponnahdusilmoitukset"
 
 #: ../src/capplet/mate-notification-properties.desktop.in.h:2
 msgid "Set your popup notification preferences"
-msgstr "Angiv dine præferencer for pop op-påmindelser"
+msgstr "Muuta ponnahdusikkuna-asetuksia"
 
 #: ../src/capplet/mate-notification-properties.ui.h:1
 msgid "Notification Settings"
-msgstr "Påmindelsesindstillinger"
+msgstr "Ilmoitusasetukset"
 
 #: ../src/capplet/mate-notification-properties.ui.h:2
 msgid "_Preview"
-msgstr "_Forhåndsvisning"
+msgstr "_Esikatselu"
 
 #: ../src/capplet/mate-notification-properties.ui.h:3
 msgid "<b>General Options</b>"
-msgstr "<b>Generelle indstillinger</b>"
+msgstr "<b>Yleiset asetukset</b>"
 
 #: ../src/capplet/mate-notification-properties.ui.h:4
 msgid "P_osition:"
-msgstr "P_osition:"
+msgstr "_Sijainti"
 
 #: ../src/capplet/mate-notification-properties.ui.h:5
 msgid "_Theme:"
-msgstr "_Tema:"
+msgstr "_Teema"
 
 #: ../src/capplet/mate-notification-properties.ui.h:6
 msgid "_Monitor:"
-msgstr "_Skærm:"
+msgstr "_Näyttö"
 
 #: ../src/capplet/mate-notification-properties.ui.h:8
 msgid "Top Left"
-msgstr "Øverst til venstre"
+msgstr "Vasen yläreuna"
 
 #: ../src/capplet/mate-notification-properties.ui.h:9
 msgid "Top Right"
-msgstr "Øverst til højre"
+msgstr "Oikea yläreuna"
 
 #: ../src/capplet/mate-notification-properties.ui.h:10
 msgid "Bottom Left"
-msgstr "Nederst til venstre"
+msgstr "Vasen alareuna"
 
 #: ../src/capplet/mate-notification-properties.ui.h:11
 msgid "Bottom Right"
-msgstr "Nederst til højre"
+msgstr "Oikea alareuna"
 
 #: ../src/daemon/daemon.c:1417
 #, c-format
 msgid "Exceeded maximum number of notifications"
-msgstr "Overskred maksimalt antal påmindelser"
+msgstr "Ilmoitusten enimmäismäärä ylitetty"
 
 #: ../src/daemon/daemon.c:1724
 #, c-format
 msgid "%u is not a valid notification ID"
-msgstr "%u er ikke et gyldigt påmindelses-id"
+msgstr "%u on epäkelpo ilmoitustunniste"
 
 #: ../src/daemon/sound.c:36
 msgid "Notification"
-msgstr "Påmindelse"
+msgstr "Ilmoitus"

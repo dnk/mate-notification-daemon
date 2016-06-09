@@ -3,12 +3,12 @@ dnl Process this file with autoconf to create configure.
 dnl ################################################################
 dnl # Initialize autoconf
 dnl ################################################################
-AC_INIT([mate-notification-daemon], [1.9.0], [http://www.mate-desktop.org])
+AC_INIT([mate-notification-daemon], [1.15.0], [http://www.mate-desktop.org])
 AC_PREREQ(2.63)
 
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([config.h.in])
-AC_CONFIG_MACRO_DIR([macros])
+AC_CONFIG_MACRO_DIR([m4])
 
 dnl ################################################################
 dnl # Version information
@@ -37,6 +37,12 @@ AC_DEFINE_UNQUOTED(NOTIFICATION_DAEMON_MICRO_VERSION, $NOTIFICATION_DAEMON_MICRO
 	[mate-notification-daemon micro version.])
 AC_DEFINE_UNQUOTED(NOTIFICATION_DAEMON_VERSION, "$NOTIFICATION_DAEMON_VERSION",
 	[mate-notification-daemon version.])
+
+# GLib min/max required versions
+AC_DEFINE([GLIB_VERSION_MAX_ALLOWED], [GLIB_VERSION_2_36],
+	[Warn on use of APIs added after GLib 2.36])
+AC_DEFINE([GLIB_VERSION_MIN_REQUIRED], [GLIB_VERSION_2_36],
+	[Warn on use of APIs deprecated before GLib 2.36])
 
 dnl ################################################################
 dnl # Initialize automake
@@ -68,7 +74,7 @@ LT_INIT
 dnl ---------------------------------------------------------------------------
 dnl i18n stuff
 dnl ---------------------------------------------------------------------------
-IT_PROG_INTLTOOL([0.40.0])
+IT_PROG_INTLTOOL([0.50.1])
 AC_SUBST([GETTEXT_PACKAGE], [mate-notification-daemon])
 AM_GLIB_GNU_GETTEXT
 AC_DEFINE([GETTEXT_PACKAGE], [PACKAGE_TARNAME], [Define to the gettext package name.])
@@ -78,31 +84,10 @@ dnl ---------------------------------------------------------------------------
 dnl Requirements for the themes
 dnl ---------------------------------------------------------------------------
 
-AC_MSG_CHECKING([which gtk+ version to compile against])
-AC_ARG_WITH([gtk],
-  [AS_HELP_STRING([--with-gtk=2.0|3.0],[which gtk+ version to compile against (default: 2.0)])],
-  [case "$with_gtk" in
-     2.0|3.0) ;;
-     *) AC_MSG_ERROR([invalid gtk version specified]) ;;
-   esac],
-  [with_gtk=2.0])
-AC_MSG_RESULT([$with_gtk])
-
-case "$with_gtk" in
-  2.0) GTK_API_VERSION=2.0
-       GTK_REQUIRED=2.24.0
-       LIBWNCK_API_VERSION=1.0
-       LIBCANBERRA_API_VERSION=
-       ;;
-  3.0) GTK_API_VERSION=3.0
-       GTK_REQUIRED=3.0.0
-       LIBWNCK_API_VERSION=3.0
-       LIBCANBERRA_API_VERSION=3
-       ;;
-esac
+GTK_REQUIRED=3.14.0
 
 PKG_CHECK_MODULES(THEME,
-  gtk+-$GTK_API_VERSION >= $GTK_REQUIRED
+  gtk+-3.0 >= $GTK_REQUIRED
 )
 AC_SUBST(THEME_CFLAGS)
 AC_SUBST(THEME_LIBS)
@@ -115,14 +100,14 @@ REQ_DBUS_VERSION=0.78
 REQ_LIBCANBERRA_GTK_VERSION=0.4
 PKG_CHECK_MODULES(GMODULE,gmodule-2.0,[GMODULE_ADD="gmodule-2.0"],[GMODULE_ADD=""])
 pkg_modules="
-	gtk+-$GTK_API_VERSION >= $GTK_REQUIRED, \
+	gtk+-3.0 >= $GTK_REQUIRED, \
 	glib-2.0 >= $REQ_GLIB_VERSION, \
 	gio-2.0 >= $REQ_GLIB_VERSION, \
         $GMODULE_ADD \
 	dbus-1 >= $REQ_DBUS_VERSION, \
 	dbus-glib-1 >= $REQ_DBUS_VERSION, \
-        libcanberra-gtk$LIBCANBERRA_API_VERSION >= $REQ_LIBCANBERRA_GTK_VERSION, \
-	libwnck-$LIBWNCK_API_VERSION \
+        libcanberra-gtk3 >= $REQ_LIBCANBERRA_GTK_VERSION, \
+	libwnck-3.0 \
         x11 \
 "
 PKG_CHECK_MODULES(NOTIFICATION_DAEMON, $pkg_modules)
@@ -132,12 +117,12 @@ AC_SUBST(NOTIFICATION_DAEMON_LIBS)
 dnl ---------------------------------------------------------------------------
 dnl Requirements for the setup tool
 dnl ---------------------------------------------------------------------------
-PKG_CHECK_MODULES(NOTIFICATION_CAPPLET, glib-2.0 >= $REQ_GLIB_VERSION gio-2.0 >= $REQ_GLIB_VERSION gtk+-$GTK_API_VERSION >= $GTK_REQUIRED libnotify dbus-1 dbus-glib-1)
+PKG_CHECK_MODULES(NOTIFICATION_CAPPLET, glib-2.0 >= $REQ_GLIB_VERSION gio-2.0 >= $REQ_GLIB_VERSION gtk+-3.0 >= $GTK_REQUIRED libnotify dbus-1 dbus-glib-1)
 AC_SUBST(NOTIFICATION_CAPPLET_CFLAGS)
 AC_SUBST(NOTIFICATION_CAPPLET_LIBS)
 
 gdk_modules="
-	gdk-$GTK_API_VERSION >= $GTK_REQUIRED, \
+	gdk-3.0 >= $GTK_REQUIRED, \
 	gdk-pixbuf-2.0 >= 2.22.0 \
 "
 PKG_CHECK_MODULES(GDK, $gdk_modules, have_gdk=yes,
@@ -221,7 +206,7 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
         AC_MSG_RESULT(yes)
         WARNINGCFLAGS="\
         -Wchar-subscripts -Wmissing-declarations \
-        -Wcast-align -Wsign-compare -Wp,-D_FORTIFY_SOURCE=2 \
+        -Wcast-align -Wsign-compare -U_FORTIFY_SOURCE -Wp,-D_FORTIFY_SOURCE=2 \
         $WARNINGCFLAGS"
 
         for option in -Wno-strict-aliasing; do
@@ -263,6 +248,7 @@ AC_CONFIG_FILES([
 Makefile
 data/Makefile
 data/org.freedesktop.mate.Notifications.service
+data/org.mate.NotificationDaemon.gschema.xml
 po/Makefile.in
 src/Makefile
 src/daemon/Makefile

@@ -1,7 +1,7 @@
 SUBDIRS = data po src
 
 # Point to our macro directory and pick up user flags from the environment
-ACLOCAL_AMFLAGS  = -I macros ${ACLOCAL_FLAGS}
+ACLOCAL_AMFLAGS  = -I m4 ${ACLOCAL_FLAGS}
 
 EXTRA_DIST = \
 	AUTHORS NEWS COPYING README \
@@ -43,5 +43,14 @@ MAINTAINERCLEANFILES = \
         $(srcdir)/ChangeLog \
         `find "$(srcdir)" -type f -name Makefile.in -print`
 
+# Build ChangeLog from GIT  history
+ChangeLog:
+	$(AM_V_GEN) if test -d $(top_srcdir)/.git; then \
+		GIT_DIR="$(top_srcdir)/.git" git log --stat > $@; \
+	fi
+
+dist: ChangeLog
+
+.PHONY: ChangeLog
 
 -include $(top_srcdir)/git.mk

@@ -3,65 +3,65 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Joe Hansen <joedalton2@yahoo.dk>, 2012-2013,2015
+# Janfy Tan <janfytan@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: MATE Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-12-14 14:02+0300\n"
-"PO-Revision-Date: 2015-09-09 13:22+0000\n"
-"Last-Translator: infirit <inactive+infirit@transifex.com>\n"
-"Language-Team: Danish (http://www.transifex.com/mate/MATE/language/da/)\n"
+"PO-Revision-Date: 2016-04-29 14:11+0000\n"
+"Last-Translator: Janfy Tan <janfytan@gmail.com>\n"
+"Language-Team: Chinese (Hong Kong) (http://www.transifex.com/mate/MATE/language/zh_HK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: da\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: zh_HK\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:1
 msgid "Popup location"
-msgstr "Placering af Pop op"
+msgstr "彈出位置"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:2
 msgid ""
 "Default popup location on the workspace for stack notifications. Allowed "
 "values: \"top_left\",\"top_right\",\"bottom_left\" and \"bottom_right\""
-msgstr "Standardplacering af pop op på arbejdsområdet for stakpåmindelser. Tilladte værdier: »top_left«, »top_right«, »bottom_left« og »bottom_right«"
+msgstr "工作區中棧通知的默認彈出位置，允許值：“左上”，“右上”，“左下”，“右下”"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:3
 #: ../src/capplet/mate-notification-properties.ui.h:7
 msgid "Use Active Monitor"
-msgstr "Brug aktiv skærm"
+msgstr "使用活躍的監察器"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:4
 msgid "Display the notification on the active monitor."
-msgstr "Vis påmindelsen på den aktive skærm."
+msgstr "在活躍的監察器上顯示通知"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:5
 msgid "Monitor"
-msgstr "Skærm"
+msgstr "監察器"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:6
 msgid ""
 "Monitor to display the notification. Allowed values: -1 (display on active "
 "monitor) and 0 to n - 1 where n is the number of monitors."
-msgstr "Skærm der skal vise påmindelsen. Tilladte værdier: -1 (visning på aktiv skærm) og 0 til n - 1 hvor n er antallet af skærme."
+msgstr "顯示通知的監察器，允許值：-1(在活躍監察器上顯示)和0到n-1，n為監察器的數量"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:7
 msgid "Current theme"
-msgstr "Aktuelt tema"
+msgstr "當前主題"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:8
 msgid "The theme used when displaying notifications."
-msgstr "Temaet brugt under visning af påmindelser."
+msgstr "在顯示通知時使用的主題"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:9
 msgid "Sound Enabled"
-msgstr "Lyd slået til"
+msgstr "啟用聲音"
 
 #: ../data/org.mate.NotificationDaemon.gschema.xml.in.h:10
 msgid "Turns on and off sound support for notifications."
-msgstr "Slår lydunderstøttelse af påmindelser til/fra."
+msgstr "為通知打開和關閉聲音支持"
 
 #: ../src/capplet/mate-notification-properties.c:329
 msgid "Coco"
@@ -69,96 +69,96 @@ msgstr "Coco"
 
 #: ../src/capplet/mate-notification-properties.c:333
 msgid "Nodoka"
-msgstr "Nodoka"
+msgstr "Nokoda"
 
 #: ../src/capplet/mate-notification-properties.c:337
 msgid "Slider"
-msgstr "Rullebjælke"
+msgstr "滑塊"
 
 #: ../src/capplet/mate-notification-properties.c:341
 msgid "Standard theme"
-msgstr "Standardtema"
+msgstr "標準主題"
 
 #: ../src/capplet/mate-notification-properties.c:458
 msgid "Error initializing libmatenotify"
-msgstr "Kunne ikke initialisere libmatenotify"
+msgstr "libmatenotify初始化錯誤"
 
 #: ../src/capplet/mate-notification-properties.c:471
 msgid "Notification Test"
-msgstr "Påmindelsestest"
+msgstr "通知測試"
 
 #: ../src/capplet/mate-notification-properties.c:471
 msgid "Just a test"
-msgstr "Bare en test"
+msgstr "只是一個測試"
 
 #: ../src/capplet/mate-notification-properties.c:475
 #, c-format
 msgid "Error while displaying notification: %s"
-msgstr "Kunne ikke vise påmindelse: %s"
+msgstr "顯示通知%s時發生錯誤"
 
 #: ../src/capplet/mate-notification-properties.c:526
 #, c-format
 msgid "Could not load user interface file: %s"
-msgstr "Kunne ikke indlæse brugergrænsefladefil: %s"
+msgstr "不能加載用戶界面文件%s"
 
 #: ../src/capplet/mate-notification-properties.desktop.in.h:1
 msgid "Popup Notifications"
-msgstr "Pop op-påmindelser"
+msgstr "彈出通知"
 
 #: ../src/capplet/mate-notification-properties.desktop.in.h:2
 msgid "Set your popup notification preferences"
-msgstr "Angiv dine præferencer for pop op-påmindelser"
+msgstr "設定你的彈出通知偏好"
 
 #: ../src/capplet/mate-notification-properties.ui.h:1
 msgid "Notification Settings"
-msgstr "Påmindelsesindstillinger"
+msgstr "通知設定"
 
 #: ../src/capplet/mate-notification-properties.ui.h:2
 msgid "_Preview"
-msgstr "_Forhåndsvisning"
+msgstr "預覽(_p)"
 
 #: ../src/capplet/mate-notification-properties.ui.h:3
 msgid "<b>General Options</b>"
-msgstr "<b>Generelle indstillinger</b>"
+msgstr "<b>常規選項</b>"
 
 #: ../src/capplet/mate-notification-properties.ui.h:4
 msgid "P_osition:"
-msgstr "P_osition:"
+msgstr "定位(_o)"
 
 #: ../src/capplet/mate-notification-properties.ui.h:5
 msgid "_Theme:"
-msgstr "_Tema:"
+msgstr "主題(_T)"
 
 #: ../src/capplet/mate-notification-properties.ui.h:6
 msgid "_Monitor:"
-msgstr "_Skærm:"
+msgstr "監察器(_M)"
 
 #: ../src/capplet/mate-notification-properties.ui.h:8
 msgid "Top Left"
-msgstr "Øverst til venstre"
+msgstr "左上"
 
 #: ../src/capplet/mate-notification-properties.ui.h:9
 msgid "Top Right"
-msgstr "Øverst til højre"
+msgstr "右上"
 
 #: ../src/capplet/mate-notification-properties.ui.h:10
 msgid "Bottom Left"
-msgstr "Nederst til venstre"
+msgstr "左下"
 
 #: ../src/capplet/mate-notification-properties.ui.h:11
 msgid "Bottom Right"
-msgstr "Nederst til højre"
+msgstr "右下"
 
 #: ../src/daemon/daemon.c:1417
 #, c-format
 msgid "Exceeded maximum number of notifications"
-msgstr "Overskred maksimalt antal påmindelser"
+msgstr "通知超過最大數量"
 
 #: ../src/daemon/daemon.c:1724
 #, c-format
 msgid "%u is not a valid notification ID"
-msgstr "%u er ikke et gyldigt påmindelses-id"
+msgstr "%u不是一個有效的通知ID"
 
 #: ../src/daemon/sound.c:36
 msgid "Notification"
-msgstr "Påmindelse"
+msgstr "通知"

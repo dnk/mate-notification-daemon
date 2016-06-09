@@ -1,5 +1,46 @@
-1.9.0
-  *
+1.15.0
+
+  * Translations update
+  * remove ancient and unneeded NEWS.GNOME file
+  * use 'm4' dir instead of 'macros' - it's more common name for it
+  * slider: remove color overriding that does nothing these days
+  * require GTK+ >= 3.14, drop GTK+2 code and --with-gtk build option
+  * Coco, Nodoka: set notification window type
+
+1.14.0
+  * Drop MateConf migration script
+  * GTK+3: explicitly wrap notification text at 50 characters
+  * GTK+3: stop reversing fg/bg colors in slider theme (use colors
+    from current GTK+ theme as is)
+  * GTK+3: some more fixes for slider theme
+  * GTK+3: some deprecation fixes
+  * Translations update
+  * Add Changelog generation
+
+1.12.1
+  * Fix crash due to regression
+  * GTK+3 fixes
+  * Translations update
+
+1.12.0
+  * Retrieve strings directly from gschema (requires intltool 0.50.1)
+  * Fix height and visibility of themes in gtk3
+  * Multiple theme fixes
+  * Some more fixes and cleanups
+
+1.10.2
+  * Standard theme: fix crash when clicking on close button
+  * Properties: remove useless help button
+  * Fix build with GLib 2.36
+  * Some more bugfixes
+
+1.10.1
+  * Don't crash on notifications from Rhythmbox
+  * Some more bugfixes
+  * Translations update
+
+1.10.0
+  * Bugfixes
 
 1.8.0
   * Switch to libwnck
